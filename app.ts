@@ -1,14 +1,10 @@
-import {
-  Application,
-  isHttpError,
-  Router,
-} from "https://deno.land/x/oak@v12.4.0/mod.ts";
-import { index_get } from "./routes/index.ts";
+import { Application, Context, isHttpError, Next, Router } from "./deps.ts";
+import { Index } from "./routes/index.ts";
 
 const app = new Application();
 const router = new Router();
 
-app.use(async (ctx, next) => {
+app.use(async (ctx: Context, next: Next) => {
   try {
     await next();
     if (ctx.response.status === 404) {
@@ -23,7 +19,7 @@ app.use(async (ctx, next) => {
 });
 
 router
-  .get("/", index_get)
+  .get("/", Index.get)
   .get("/other", (ctx) => ctx.throw(415));
 
 app.use(router.routes());
